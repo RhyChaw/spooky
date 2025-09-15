@@ -12,6 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const creepster = Creepster({
+  variable: "--font-creepster",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Spook — Horror Hacks",
   description: "A spooky game built with Next.js for Horror Hacks.",
@@ -25,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-[#0b0b10] via-black to-[#0b0b10] text-[#ededed]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${creepster.variable} antialiased bg-gradient-to-b from-[#0b0b10] via-black to-[#0b0b10] text-[#ededed]`}
       >
         {children}
       </body>
