@@ -207,26 +207,27 @@ function Flashlight({ enabled }: { enabled: boolean }) {
 
 // KnightModel removed as it's not used
 
-function PeacockModel(props: React.JSX.IntrinsicElements["group"]) {
-  const { scene } = useGLTF("/peacock_portrait_smoothie-3d_upload.glb");
-  const peacock = useMemo(() => scene.clone(), [scene]);
-  
-  // Ensure peacock can receive and cast light
-  useEffect(() => {
-    peacock.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = true;
-      }
-    });
-  }, [peacock]);
-
-  return (
-    <group {...props}>
-      <primitive object={peacock} />
-    </group>
-  );
-}
+// Temporarily disabled due to LFS deployment issues
+// function PeacockModel(props: React.JSX.IntrinsicElements["group"]) {
+//   const { scene } = useGLTF("/peacock_portrait_smoothie-3d_upload.glb");
+//   const peacock = useMemo(() => scene.clone(), [scene]);
+//   
+//   // Ensure peacock can receive and cast light
+//   useEffect(() => {
+//     peacock.traverse((obj) => {
+//       if (obj instanceof THREE.Mesh) {
+//         obj.castShadow = true;
+//         obj.receiveShadow = true;
+//       }
+//     });
+//   }, [peacock]);
+//
+//   return (
+//     <group {...props}>
+//       <primitive object={peacock} />
+//     </group>
+//   );
+// }
 
 function DollModel(props: React.JSX.IntrinsicElements["group"]) {
   const { scene } = useGLTF("/doll.glb");
@@ -914,8 +915,8 @@ function GameContent() {
             {/* Riddle Text */}
             <RiddleText visible={showNoticeRiddle} />
             
-            {/* Peacock */}
-            {!peacockSwapped ? (
+            {/* Peacock - temporarily disabled due to LFS issues */}
+            {/* {!peacockSwapped ? (
               <PeacockModel 
                 position={[-9.07, 1.6, 8.73]} 
                 scale={[0.25, 0.25, 0.25]} 
@@ -927,7 +928,7 @@ function GameContent() {
                 scale={[10.0, 10.0, 10.0]} 
                 rotation={[0, Math.PI + (80 * Math.PI / 180) + Math.PI, 0]} 
               />
-            )}
+            )} */}
             
             {/* Boundary Walls (invisible) */}
             <group>
@@ -1160,7 +1161,7 @@ useGLTF.preload("/the_room.glb");
 useGLTF.preload("/ghost.glb");
 // useGLTF.preload("/notice_board_low-poly.glb"); // Temporarily disabled
 useGLTF.preload("/knight_of_the_blood_order.glb");
-useGLTF.preload("/peacock_portrait_smoothie-3d_upload.glb");
+// useGLTF.preload("/peacock_portrait_smoothie-3d_upload.glb"); // Temporarily disabled
 useGLTF.preload("/doll.glb");
 
 export default function GamePage() {
