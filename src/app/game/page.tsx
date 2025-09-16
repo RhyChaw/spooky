@@ -1,30 +1,13 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, OrbitControls, useGLTF, PointerLockControls, KeyboardControls, useKeyboardControls, Html } from "@react-three/drei";
+import { useGLTF, PointerLockControls, KeyboardControls, useKeyboardControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 
-function RoomModel(props: JSX.IntrinsicElements["group"]) {
-  const { scene } = useGLTF("/the_room.glb");
-  const room = useMemo(() => scene.clone(), [scene]);
-  // Ensure room can receive and cast light
-  useEffect(() => {
-    room.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
-    });
-  }, [room]);
-  return (
-    <group {...props}>
-      <primitive object={room} />
-    </group>
-  );
-}
+// RoomModel removed as it's not used
 
 function Lights({ brightness = 1 }: { brightness?: number }) {
   return (
@@ -134,7 +117,7 @@ function ChairProximityDetector({ onProximityChange }: { onProximityChange: (isN
   return null;
 }
 
-function GhostModel({ glow, ...props }: JSX.IntrinsicElements["group"] & { glow?: boolean }) {
+function GhostModel({ glow, ...props }: React.JSX.IntrinsicElements["group"] & { glow?: boolean }) {
   const { scene } = useGLTF("/ghost.glb");
   const ghost = useMemo(() => scene.clone(), [scene]);
   
@@ -142,7 +125,7 @@ function GhostModel({ glow, ...props }: JSX.IntrinsicElements["group"] & { glow?
   useEffect(() => {
     ghost.traverse((obj) => {
       const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
+      if (mesh instanceof THREE.Mesh) {
         mesh.castShadow = true;
         mesh.receiveShadow = true;
       }
@@ -200,17 +183,16 @@ function Flashlight({ enabled }: { enabled: boolean }) {
   );
 }
 
-function NoticeBoardModel(props: JSX.IntrinsicElements["group"]) {
+function NoticeBoardModel(props: React.JSX.IntrinsicElements["group"]) {
   const { scene } = useGLTF("/notice_board_low-poly.glb");
   const noticeBoard = useMemo(() => scene.clone(), [scene]);
   
   // Ensure notice board can receive and cast light
   useEffect(() => {
     noticeBoard.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+      if (obj instanceof THREE.Mesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
       }
     });
   }, [noticeBoard]);
@@ -222,39 +204,18 @@ function NoticeBoardModel(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-function KnightModel(props: JSX.IntrinsicElements["group"]) {
-  const { scene } = useGLTF("/knight_of_the_blood_order.glb");
-  const knight = useMemo(() => scene.clone(), [scene]);
-  
-  // Ensure knight can receive and cast light
-  useEffect(() => {
-    knight.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
-    });
-  }, [knight]);
+// KnightModel removed as it's not used
 
-  return (
-    <group {...props}>
-      <primitive object={knight} />
-    </group>
-  );
-}
-
-function PeacockModel(props: JSX.IntrinsicElements["group"]) {
+function PeacockModel(props: React.JSX.IntrinsicElements["group"]) {
   const { scene } = useGLTF("/peacock_portrait_smoothie-3d_upload.glb");
   const peacock = useMemo(() => scene.clone(), [scene]);
   
   // Ensure peacock can receive and cast light
   useEffect(() => {
     peacock.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+      if (obj instanceof THREE.Mesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
       }
     });
   }, [peacock]);
@@ -266,17 +227,16 @@ function PeacockModel(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-function DollModel(props: JSX.IntrinsicElements["group"]) {
+function DollModel(props: React.JSX.IntrinsicElements["group"]) {
   const { scene } = useGLTF("/doll.glb");
   const doll = useMemo(() => scene.clone(), [scene]);
   
   // Ensure doll can receive and cast light
   useEffect(() => {
     doll.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if ((mesh as any).isMesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+      if (obj instanceof THREE.Mesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
       }
     });
   }, [doll]);
@@ -313,7 +273,7 @@ function PeacockHoverDetector({
 }) {
   const { camera } = useThree();
   const peacockPosition = new THREE.Vector3(-9.07, 1.6, 8.73);
-  const dollPosition = new THREE.Vector3(-9.07, 1, 8.09);
+  // const dollPosition = new THREE.Vector3(-9.07, 1, 8.09); // Not used
   const hoverThreshold = 2; // Distance threshold for hover detection
 
   useFrame(() => {
@@ -410,17 +370,17 @@ function RiddleText({ visible }: { visible: boolean }) {
         distanceFactor={2}
       >
         <div className="text-yellow-400 text-lg font-bold tracking-wider leading-tight text-center max-w-sm">
-          "In shadowed halls where whispers spread,<br/>
+          &ldquo;In shadowed halls where whispers spread,<br/>
           Find the peacock, strike its head.<br/>
           Bleeding silence marks your way,<br/>
-          The path awakens when it's slain."
+          The path awakens when it&apos;s slain.&rdquo;
         </div>
       </Html>
     </group>
   );
 }
 
-export default function GamePage() {
+function GameContent() {
   const params = useSearchParams();
   const name = params.get("name") || "Player";
   const [isPointerLocked, setIsPointerLocked] = useState(false);
@@ -435,9 +395,9 @@ export default function GamePage() {
   const [ghostPosition, setGhostPosition] = useState([-5.37, 0, 1.24] as [number, number, number]);
   const [ghostRotation, setGhostRotation] = useState([0, Math.PI / 2, 0] as [number, number, number]);
   const [ghostGlow, setGhostGlow] = useState(false);
-  const [userPosition, setUserPosition] = useState([0, 1.6, 5] as [number, number, number]);
+  // const [userPosition] = useState([0, 1.6, 5] as [number, number, number]); // Not used
   const [showControls, setShowControls] = useState(true);
-  const [health, setHealth] = useState(100);
+  const [health] = useState(100);
   const [movementDisabled, setMovementDisabled] = useState(false);
   const [flashlightOn, setFlashlightOn] = useState(false);
   const [showStartNotice, setShowStartNotice] = useState(true);
@@ -446,6 +406,7 @@ export default function GamePage() {
   const [showPeacockHover, setShowPeacockHover] = useState(false);
   const [cameraFlipped, setCameraFlipped] = useState(false);
   const [peacockSwapped, setPeacockSwapped] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null);
   const ghostTimerRef = useRef<NodeJS.Timeout | null>(null);
   const ghostStartTimeRef = useRef<number | null>(null);
@@ -556,7 +517,7 @@ export default function GamePage() {
           
           // Ghost reached center, now slowly turn to face user over 2 seconds
           const currentUserPos = [coords.x, coords.y, coords.z] as [number, number, number];
-          setUserPosition(currentUserPos);
+          // setUserPosition(currentUserPos); // Not used
           
           // Calculate rotation to face user
           const dx = currentUserPos[0] - endPos[0];
@@ -664,10 +625,11 @@ export default function GamePage() {
       initKidsLaugh();
       playKidsLaugh();
       
-      // Flip camera 180 degrees
-      if (controlsRef.current) {
-        const currentRotation = controlsRef.current.getAzimuthalAngle();
-        controlsRef.current.setAzimuthalAngle(currentRotation + Math.PI);
+      // Flip camera 180 degrees by rotating the camera directly
+      if (controlsRef.current && controlsRef.current.object) {
+        const camera = controlsRef.current.object;
+        // Rotate camera 180 degrees around Y axis
+        camera.rotation.y += Math.PI;
       }
       
       // Reset after 3 seconds
@@ -685,7 +647,7 @@ export default function GamePage() {
 
   function initAudioIfNeeded() {
     if (audioRef.current.ctx) return;
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sawtooth";
@@ -832,7 +794,7 @@ export default function GamePage() {
               ⚠️ LOCKED IN ⚠️
             </div>
             <div className="text-white text-lg leading-relaxed">
-              You are trapped in this room. The door is locked and there's no way out through conventional means.
+              You are trapped in this room. The door is locked and there&apos;s no way out through conventional means.
             </div>
             <div className="text-red-300 text-sm mt-4 font-medium">
               Find another way to escape...
@@ -917,7 +879,7 @@ export default function GamePage() {
         </div>
       </div>
 
-      <KeyboardControls map={map as any}>
+      <KeyboardControls map={map}>
         <Canvas 
           shadows 
           camera={{ fov: 60, near: 0.1, far: 200 }}
@@ -1101,10 +1063,6 @@ export default function GamePage() {
               ref={controlsRef}
               onLock={() => setIsPointerLocked(true)}
               onUnlock={() => setIsPointerLocked(false)}
-              onError={(error) => {
-                console.warn("PointerLockControls error:", error);
-                setIsPointerLocked(false);
-              }}
             />
             <CanvasCoordReporter onChange={setCoords} />
           </Suspense>
@@ -1134,7 +1092,7 @@ export default function GamePage() {
                 {(["resume","controls","audio","brightness"] as const).map((tab) => (
                   <button key={tab} onClick={() => setActiveTab(tab)} className={`block w-full text-left rounded-md px-3 py-2 tracking-wide ${activeTab === tab ? "bg-orange-600/20 text-orange-400" : "hover:bg-zinc-900"}`}>{tab.toUpperCase()}</button>
                 ))}
-                <a href="/" className="mt-2 block w-full text-left rounded-md px-3 py-2 hover:bg-zinc-900">MAIN MENU</a>
+                <Link href="/" className="mt-2 block w-full text-left rounded-md px-3 py-2 hover:bg-zinc-900">MAIN MENU</Link>
               </div>
               <div className="flex-1 p-6">
                 {activeTab === "resume" && (
@@ -1195,33 +1153,7 @@ export default function GamePage() {
   );
 }
 
-function FitCameraToObject({ objectRef, controlsRef }: { objectRef: React.RefObject<THREE.Object3D>; controlsRef?: React.RefObject<any> }) {
-  const { camera, gl } = useThree();
-  useEffect(() => {
-    const obj = objectRef.current;
-    if (!obj) return;
-    const box = new THREE.Box3().setFromObject(obj);
-    if (!box.isEmpty()) {
-      const size = new THREE.Vector3();
-      const center = new THREE.Vector3();
-      box.getSize(size);
-      box.getCenter(center);
-
-      const maxSize = Math.max(size.x, size.y, size.z);
-      const fitHeightDistance = maxSize / (2 * Math.tan((Math.PI * camera.fov) / 360));
-      const fitWidthDistance = fitHeightDistance / (gl.domElement.clientHeight / gl.domElement.clientWidth);
-      const distance = 1.2 * Math.max(fitHeightDistance, fitWidthDistance);
-
-      camera.position.set(center.x + distance, center.y + distance * 0.4, center.z + distance);
-      camera.lookAt(center);
-      if (controlsRef?.current) {
-        controlsRef.current.target.copy(center);
-        controlsRef.current.update();
-      }
-    }
-  }, [camera, gl, objectRef, controlsRef]);
-  return null;
-}
+// FitCameraToObject removed as it's not used
 
 useGLTF.preload("/the_room.glb");
 useGLTF.preload("/ghost.glb");
@@ -1229,4 +1161,12 @@ useGLTF.preload("/notice_board_low-poly.glb");
 useGLTF.preload("/knight_of_the_blood_order.glb");
 useGLTF.preload("/peacock_portrait_smoothie-3d_upload.glb");
 useGLTF.preload("/doll.glb");
+
+export default function GamePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GameContent />
+    </Suspense>
+  );
+}
 
