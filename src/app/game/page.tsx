@@ -183,26 +183,27 @@ function Flashlight({ enabled }: { enabled: boolean }) {
   );
 }
 
-function NoticeBoardModel(props: React.JSX.IntrinsicElements["group"]) {
-  const { scene } = useGLTF("/notice_board_low-poly.glb");
-  const noticeBoard = useMemo(() => scene.clone(), [scene]);
-  
-  // Ensure notice board can receive and cast light
-  useEffect(() => {
-    noticeBoard.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = true;
-      }
-    });
-  }, [noticeBoard]);
-
-  return (
-    <group {...props}>
-      <primitive object={noticeBoard} />
-    </group>
-  );
-}
+// Temporarily disabled due to deployment issues
+// function NoticeBoardModel(props: React.JSX.IntrinsicElements["group"]) {
+//   const { scene } = useGLTF("/notice_board_low-poly.glb");
+//   const noticeBoard = useMemo(() => scene.clone(), [scene]);
+//   
+//   // Ensure notice board can receive and cast light
+//   useEffect(() => {
+//     noticeBoard.traverse((obj) => {
+//       if (obj instanceof THREE.Mesh) {
+//         obj.castShadow = true;
+//         obj.receiveShadow = true;
+//       }
+//     });
+//   }, [noticeBoard]);
+//
+//   return (
+//     <group {...props}>
+//       <primitive object={noticeBoard} />
+//     </group>
+//   );
+// }
 
 // KnightModel removed as it's not used
 
@@ -907,8 +908,8 @@ function GameContent() {
             />
             <PlayerBoundary onPositionChange={(pos) => setCoords({ x: pos.x, y: pos.y, z: pos.z })} />
             
-            {/* Notice Board */}
-            <NoticeBoardModel position={[-0.65, 1.6, -8.82]} rotation={[0, Math.PI / 2, 0]} />
+            {/* Notice Board - temporarily disabled */}
+            {/* <NoticeBoardModel position={[-0.65, 1.6, -8.82]} rotation={[0, Math.PI / 2, 0]} /> */}
             
             {/* Riddle Text */}
             <RiddleText visible={showNoticeRiddle} />
@@ -1157,7 +1158,7 @@ function GameContent() {
 
 useGLTF.preload("/the_room.glb");
 useGLTF.preload("/ghost.glb");
-useGLTF.preload("/notice_board_low-poly.glb");
+// useGLTF.preload("/notice_board_low-poly.glb"); // Temporarily disabled
 useGLTF.preload("/knight_of_the_blood_order.glb");
 useGLTF.preload("/peacock_portrait_smoothie-3d_upload.glb");
 useGLTF.preload("/doll.glb");
