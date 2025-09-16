@@ -117,36 +117,37 @@ function ChairProximityDetector({ onProximityChange }: { onProximityChange: (isN
   return null;
 }
 
-function GhostModel({ glow, ...props }: React.JSX.IntrinsicElements["group"] & { glow?: boolean }) {
-  const { scene } = useGLTF("/ghost.glb");
-  const ghost = useMemo(() => scene.clone(), [scene]);
-  
-  // Ensure ghost can receive and cast light
-  useEffect(() => {
-    ghost.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if (mesh instanceof THREE.Mesh) {
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
-    });
-  }, [ghost]);
-
-  return (
-    <group {...props}>
-      <primitive object={ghost} />
-      {glow && (
-        <pointLight
-          position={[0, 1, 0]}
-          intensity={3}
-          distance={8}
-          decay={2}
-          color="#ff0000"
-        />
-      )}
-    </group>
-  );
-}
+// Temporarily disabled due to LFS deployment issues
+// function GhostModel({ glow, ...props }: React.JSX.IntrinsicElements["group"] & { glow?: boolean }) {
+//   const { scene } = useGLTF("/ghost.glb");
+//   const ghost = useMemo(() => scene.clone(), [scene]);
+//   
+//   // Ensure ghost can receive and cast light
+//   useEffect(() => {
+//     ghost.traverse((obj) => {
+//       const mesh = obj as THREE.Mesh;
+//       if (mesh instanceof THREE.Mesh) {
+//         mesh.castShadow = true;
+//         mesh.receiveShadow = true;
+//       }
+//     });
+//   }, [ghost]);
+//
+//   return (
+//     <group {...props}>
+//       <primitive object={ghost} />
+//       {glow && (
+//         <pointLight
+//           position={[0, 1, 0]}
+//           intensity={3}
+//           distance={8}
+//           decay={2}
+//           color="#ff0000"
+//         />
+//       )}
+//     </group>
+//   );
+// }
 
 function Flashlight({ enabled }: { enabled: boolean }) {
   const { camera } = useThree();
@@ -954,16 +955,27 @@ function GameContent() {
               </mesh>
             </group>
             
-            {/* Ghost Model */}
+            {/* Ghost Model - using simple geometry due to LFS issues */}
             {ghostVisible && (
               <>
                 {console.log("Rendering ghost at position:", ghostPosition)}
-                <GhostModel 
-                  position={ghostPosition} 
-                  scale={[0.2, 0.2, 0.2]} 
-                  rotation={ghostRotation} 
-                  glow={ghostGlow}
-                />
+                <group position={ghostPosition} rotation={ghostRotation}>
+                  {/* Simple ghost shape using basic geometry */}
+                  <mesh scale={[0.2, 0.2, 0.2]}>
+                    <coneGeometry args={[1, 2, 8]} />
+                    <meshBasicMaterial color="#ffffff" transparent opacity={0.8} />
+                  </mesh>
+                  {/* Glowing effect */}
+                  {ghostGlow && (
+                    <pointLight
+                      position={[0, 1, 0]}
+                      intensity={3}
+                      distance={8}
+                      decay={2}
+                      color="#ff0000"
+                    />
+                  )}
+                </group>
               </>
             )}
             
@@ -1158,7 +1170,7 @@ function GameContent() {
 // FitCameraToObject removed as it's not used
 
 useGLTF.preload("/the_room.glb");
-useGLTF.preload("/ghost.glb");
+// useGLTF.preload("/ghost.glb"); // Temporarily disabled
 // useGLTF.preload("/notice_board_low-poly.glb"); // Temporarily disabled
 useGLTF.preload("/knight_of_the_blood_order.glb");
 // useGLTF.preload("/peacock_portrait_smoothie-3d_upload.glb"); // Temporarily disabled
